@@ -1,30 +1,10 @@
 const express = require("express");
-
 const app = express();
+const allTasksRouter = require("./routes/allTasks");
+const cors = require('cors');
 
+app.use(cors());
 app.use(express.json());
-
-// let tasks = [];
-
-// let taskName = "planning";
-// let running = true;
-// let pending = false;
-// let succeeded = false;
-// let failed = false;
-// let blocked = false;
-// let cancelled = false;
-
-
-app.get("/status", (req, res) => {
-  res.json({
-    "task": taskName,
-    "running": running,
-    "pending": pending,
-    "succeeded": succeeded,
-    "failed": failed,
-    "blocked": blocked,
-    "cancelled": cancelled
-  });
-});
+app.use("/api", allTasksRouter);
 
 module.exports = app;

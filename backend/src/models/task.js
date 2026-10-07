@@ -7,10 +7,22 @@ const taskSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["running", "pending", "succeeded", "failed", "blocked", "cancelled"],
-        default: "pending",
+        enum: ["waiting", "running", "succeeded", "failed", "blocked", "cancelled"],
+        default: "waiting",
         required: true,
         index: true
+    },
+    dependencies: [{
+        type: String,
+        ref: "Task"
+    }],
+    attempts: {
+        type: Number,
+        default: 0
+    },
+    retries: {
+        type: Number,
+        default: 3
     }
 });
 
