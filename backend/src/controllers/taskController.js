@@ -10,6 +10,20 @@ const getAllTasks = async (req, res) => {
   }
 };
 
+const getStats = async (req, res) => {
+  try {
+    const running = await Task.countDocuments({ status: "running" });
+    const waiting = await Task.countDocuments({ status: "waiting" });
+
+    res.json({
+      running,
+      waiting
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const createTask = async (req, res) => {
   const { taskName, status, dependencies, retries, attempts } = req.body;
 
@@ -27,12 +41,19 @@ const createTask = async (req, res) => {
 
 const getTaskStatus = async (req, res) => {
   const { taskId } = req.params;
-    try {
-    const task = await Task.findOne({ taskId });
+
+  try {
+    const task = await Task.findById(taskId);
+
     if (!task) {
-      return res.status(404).json({ message: 'Task not found' });
+      return res.status(404).json({ message: "Task not found" });
     }
-    res.json(task);
+
+    res.json({
+      taskName: task.taskName,
+      status: task.status,
+      attempts: task.attempts
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -98,6 +119,7 @@ const cancelTask = async (req, res) => {
 
 module.exports = {
   getAllTasks,
+  getStats,
   createTask,
   getTaskStatus,
   cancelTask,

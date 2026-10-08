@@ -1,0 +1,34 @@
+Implemented
+
+Task creation and MongoDB persistence
+Task dependencies and dependency checking
+FIFO scheduling using createdAt
+Configurable concurrency limit
+Task status tracking
+Attempts tracking
+Task cancellation
+Blocked tasks for failed/blocked dependencies
+Run All functionality
+Task simulation with random failures
+Basic retry mechanism
+Status API
+Stats API
+
+
+Partially Implemented
+
+Retries — retry count works, but increasing delay is not implemented
+Cancellation — cancellation works, but dependent-task handling needs improvement
+Concurrency — works for the current single-process scheduler
+Task simulation — failure probability is hardcoded and duration is fixed
+Dependency handling — works for normal cases, but cancellation/corner cases need handling
+Run All — works, but resets all task states
+
+
+Not Implemented / Not Touched
+
+Circular dependency detection
+Restart/recovery after service shutdown
+Increasing retry delay/backoff
+Batch/Multiple task submission
+Required automated tests

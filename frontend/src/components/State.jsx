@@ -4,7 +4,7 @@ import styles from '../cssModules/App.module.css';
 export default function State() {
     const [ state, setState ] = useState(null);
   useEffect(() => {
-    fetch('http://localhost:4000/api/stats')
+    fetch('http://localhost:4000/api/allStats')
       .then(response => response.json())
       .then(data => setState(data))
       .catch(error => console.error('Error fetching stats:', error));

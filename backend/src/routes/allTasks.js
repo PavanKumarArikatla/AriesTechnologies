@@ -1,9 +1,10 @@
-const {getAllTasks, createTask, getTaskStatus, runTaskController, cancelTask, runAllTasks} = require('../controllers/taskController');
+const {getAllTasks, getStats, createTask, getTaskStatus, runTaskController, cancelTask, runAllTasks} = require('../controllers/taskController');
 
 const express = require('express');
 const router = express.Router();
 
-router.get('/stats', getAllTasks);
+router.get('/allStats', getAllTasks);
+router.get('/stats', getStats);
 router.post('/submit', createTask);
 router.get('/status/:taskId', getTaskStatus);
 router.patch('/cancel/:taskId', cancelTask);
