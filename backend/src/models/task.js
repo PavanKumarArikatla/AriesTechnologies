@@ -7,13 +7,13 @@ const taskSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["waiting", "running", "succeeded", "failed", "blocked", "cancelled"],
+        enum: ["waiting", "running", "succeeded", "failed", "blocked"],
         default: "waiting",
         required: true,
         index: true
     },
     dependencies: [{
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Task"
     }],
     attempts: {

@@ -10,7 +10,24 @@ export default function State() {
       .catch(error => console.error('Error fetching stats:', error));
   }, []);
 
+  function handleRun(taskId) {
+    fetch(`http://localhost:4000/api/run/${taskId}`, {
+      method: 'POST',
+    })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error('Error running task:', error));
+  }
 
+  function handleCancel(taskId) {
+    fetch(`http://localhost:4000/api/cancel/${taskId}`, {
+      method: 'POST', 
+    })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error('Error cancelling task:', error));
+  }
+  
   return (
     <div>
       <h1>Task Management System</h1>
@@ -33,8 +50,8 @@ export default function State() {
               <p>{task.retries}</p>
               <p className={styles.attempts}>
                 {task.attempts}
-                <button>Run</button>
-                <button>Cancel</button>
+                <button onClick={() => handleRun(task._id)}>Run</button>
+                <button onClick={() => handleCancel(task._id)}>Cancel</button>
               </p>
             </div>
           ))}

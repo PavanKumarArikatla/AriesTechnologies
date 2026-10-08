@@ -1,4 +1,5 @@
 const Task = require('../models/task');
+const {runTask} = require('../services/runTask');
 
 const getAllTasks = async (req, res) => {
   try {
@@ -17,9 +18,8 @@ const createTask = async (req, res) => {
     if(!task) {
       return res.status(400).json({ message: 'Task creation failed' });
     }
-    // const interval = setInterval(() => {
-    //   res.status(201).json(task);
-    // }, 1000);
+    await runTask(task._id);
+    res.status(201).json(task);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -38,10 +38,24 @@ const getTaskStatus = async (req, res) => {
   }
 };
 
-const cancelTask = async (req, res) => {
-  const { taskName } = req.params;
+const runTaskController = async (req, res) => {
+  const { taskId } = req.params;
   try {
-    const task = await Task.findOne({ taskName });
+    const task = await Task.findById(taskId);
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+    await runTask(taskId);
+    res.json({ message: 'Task initiated' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const cancelTask = async (req, res) => {
+  const { taskId } = req.params;
+  try {
+    const task = await Task.findById(taskId);
     if (!task) {
       return res.status(404).json({ message: 'Task not found' });
     }
@@ -57,5 +71,6 @@ module.exports = {
   getAllTasks,
   createTask,
   getTaskStatus,
-  cancelTask
+  cancelTask,
+  runTaskController
 };
