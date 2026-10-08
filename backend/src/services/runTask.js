@@ -4,7 +4,7 @@ const runTask = async (task) => {
     if (!task) throw new Error("Task not found");
 
     await new Promise((resolve) => {
-      setTimeout(resolve, 10000);
+      setTimeout(resolve, 5000);
     });
 
     const random = Math.random();

@@ -26,9 +26,9 @@ const createTask = async (req, res) => {
 };
 
 const getTaskStatus = async (req, res) => {
-  const { taskName } = req.params;
+  const { taskId } = req.params;
     try {
-    const task = await Task.findOne({ taskName });
+    const task = await Task.findOne({ taskId });
     if (!task) {
       return res.status(404).json({ message: 'Task not found' });
     }
@@ -57,6 +57,30 @@ const runTaskController = async (req, res) => {
   }
 };
 
+const runAllTasks = async (req, res) => {
+  try {
+    await Task.updateMany(
+      {},
+      {
+        $set: {
+          status: "waiting",
+          attempts: 0
+        }
+      }
+    );
+
+    taskRunner();
+
+    res.json({
+      message: "All tasks reset and execution started"
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    });
+  }
+};
+
 const cancelTask = async (req, res) => {
   const { taskId } = req.params;
   try {
@@ -77,5 +101,6 @@ module.exports = {
   createTask,
   getTaskStatus,
   cancelTask,
-  runTaskController
+  runTaskController,
+  runAllTasks
 };
