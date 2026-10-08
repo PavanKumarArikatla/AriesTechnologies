@@ -1,46 +1,32 @@
-const Task = require("../models/task");
 
-const runTask = async (taskId) => {
+const runTask = async (task) => {
   try {
-    const task = await Task.findById(taskId).populate("dependencies");
-    if (!task) {
-      throw new Error('Task not found');
-    }
-    const blockedDependencies = task.dependencies.some(dep => dep.status === 'blocked' || dep.status === 'failed');
-    const completedDependencies = task.dependencies.every(dep => dep.status === 'succeeded');
-    if (blockedDependencies) {
-      task.status = 'blocked';
-      await task.save();
-      return;
-    }
-    if (!completedDependencies) {
-      task.status = 'waiting';
-      await task.save();
-      return;
-    }
+    if (!task) throw new Error("Task not found");
 
-    task.status = 'running';
-    task.attempts += 1;
-    await task.save();
-    
-     setTimeout(async () => {
-      const failed = Math.random() < 0.5;
+    await new Promise((resolve) => {
+      setTimeout(resolve, 10000);
+    });
 
-      if (failed) {
+    const random = Math.random();
+    console.log(random);
+    const failed = random < 0.6;
+    if (failed) {
+        console.log(`${task.taskName} failed on attempt ${task.attempts}`);
+
         if (task.attempts <= task.retries) {
-          task.status = "waiting";
-          await task.save();
-
-          runTask(taskId);
-        } else {
-          task.status = "failed";
-          await task.save();
+            task.status = "waiting";
+            await task.save();
+            return;
         }
+
+        task.status = "failed";
+        await task.save();
+
         return;
-      }
-      task.status = "succeeded";
-      await task.save();
-    }, 10000);
+    }
+
+    task.status = "succeeded";
+    await task.save();
   } catch (error) {
     throw new Error(`Error running task: ${error.message}`);
   }

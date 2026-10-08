@@ -1,5 +1,5 @@
-const Task = require('../models/task');
-const {runTask} = require('../services/runTask');
+const Task = require("../models/task");
+const { taskRunner } = require('../services/tasksRunner');
 
 const getAllTasks = async (req, res) => {
   try {
@@ -18,7 +18,7 @@ const createTask = async (req, res) => {
     if(!task) {
       return res.status(400).json({ message: 'Task creation failed' });
     }
-    await runTask(task._id);
+    taskRunner();
     res.status(201).json(task);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -43,10 +43,15 @@ const runTaskController = async (req, res) => {
   try {
     const task = await Task.findById(taskId);
     if (!task) {
-      return res.status(404).json({ message: 'Task not found' });
+      return res.status(404).json({ message: "Task not found" });
     }
-    await runTask(taskId);
-    res.json({ message: 'Task initiated' });
+    task.status = "waiting";
+    task.attempts = 0;
+    await task.save();
+
+    await taskRunner();
+
+    res.json({ message: "Task re-run initiated" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
